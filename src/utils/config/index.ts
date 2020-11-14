@@ -1,11 +1,11 @@
-import { App as Application }  from 'vue';
+import { App as Application } from 'vue';
 
-let config = {};
+const config = {};
 
 export { config as default };
+
+export let VueInstance: Application;
 
 export const setVueInstance = (instance: Application) => {
   VueInstance = instance;
 };
-
-export let VueInstance:  Application;

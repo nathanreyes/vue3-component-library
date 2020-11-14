@@ -1,25 +1,25 @@
-@import "@css/main.css";
+@import '@css/main.css';
 
 h3 {
-    margin: 40px 0 0;
+  margin: 40px 0 0;
 }
 
 ul {
-    list-style-type: none;
-    padding: 0;
+  list-style-type: none;
+  padding: 0;
 }
 
 li {
-    display: inline-block;
-    margin: 0 10px;
+  display: inline-block;
+  margin: 0 10px;
 }
 
 .highlight1 {
-    color: $red;
+  color: red;
 }
 
 .imgtest {
-  background-image: url("../../assets/img/icons/star-half.svg");
+  background-image: url('../../assets/img/icons/star-half.svg');
   background-size: 100%;
   width: 100px;
   height: 100px;

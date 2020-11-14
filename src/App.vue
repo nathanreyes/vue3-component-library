@@ -1,19 +1,18 @@
 <template>
-  <img alt="Vue logo" src="./assets/logo.png" />
   <HelloWorld />
-  <TestWorld />
+  <Calendar />
 </template>
 
 <script>
-import TestWorld from "./components/testworld/TestWorld.vue";
-import HelloWorld from "./components/helloworld/HelloWorld.vue";
+import HelloWorld from './components/helloworld/HelloWorld.vue';
+import Calendar from './components/Calendar/Calendar.vue';
 
 export default {
-  name: "App",
+  name: 'App',
   components: {
-    TestWorld,
-    HelloWorld
-  }
+    HelloWorld,
+    Calendar,
+  },
 };
 </script>
 

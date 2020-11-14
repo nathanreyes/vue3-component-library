@@ -6,22 +6,22 @@
 </template>
 
 <script>
-import { defineComponent } from "vue";
+import { defineComponent } from 'vue';
 
 export default defineComponent({
-  name: "HelloWorld",
+  name: 'HelloWorld',
   props: {
-    msg: String
+    msg: String,
   },
   setup() {
-    const textmsg = "I am Hello World Component";
+    const textmsg = 'I am Hello World Component';
     return {
-      textmsg
+      textmsg,
     };
-  }
+  },
 });
 </script>
 
 <style lang="css" scoped>
-@import "./helloworld.css";
+@import './helloworld.css';
 </style>

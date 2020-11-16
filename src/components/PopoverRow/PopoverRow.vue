@@ -74,6 +74,6 @@ export default {
 };
 </script>
 
-<style lang="css" scoped>
+<style lang="css">
 @import './popover-row.css';
 </style>

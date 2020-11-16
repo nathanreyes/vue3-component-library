@@ -44,25 +44,25 @@
     </grid>
     <!--Navigation items-->
     <grid
+      :items="activeItems"
       :rows="4"
       :columns="3"
       gap="2px 5px"
       ref="itemsGrid"
       @rollover="onItemsRollover"
     >
-      <span
-        v-for="item in activeItems"
-        :key="item.label"
-        role="button"
-        :aria-label="item.ariaLabel"
-        :class="getItemClasses(item)"
-        :tabindex="item.isDisabled ? undefined : item.isActive ? 0 : -1"
-        @click="item.click"
-        @keydown="e => onSpaceOrEnter(e, item.click)"
-        ref="items"
-      >
-        {{ item.label }}
-      </span>
+      <template #cell="{ item }">
+        <span
+          role="button"
+          :aria-label="item.ariaLabel"
+          :class="getItemClasses(item)"
+          :tabindex="item.isDisabled ? undefined : item.isActive ? 0 : -1"
+          @click="item.click"
+          @keydown="e => onSpaceOrEnter(e, item.click)"
+        >
+          {{ item.label }}
+        </span>
+      </template>
     </grid>
   </div>
 </template>
@@ -78,6 +78,7 @@ const _yearGroupCount = 12;
 
 export default {
   name: 'CalendarNav',
+  emits: ['input'],
   components: {
     Grid,
     SvgIcon,

@@ -1,20 +1,24 @@
+<template>
+  <transition
+    :name="name_"
+    :appear="appear"
+    @before-enter="beforeEnter"
+    @afterEnter="afterEnter"
+  >
+    <slot />
+  </transition>
+</template>
 <script>
+import { h } from 'vue';
+
 export default {
   name: 'CustomTransition',
-  render(h) {
-    return h(
-      'transition',
-      {
-        props: {
-          name: this.name_,
-          appear: this.appear,
-        },
-        onBeforeEnter: this.beforeEnter,
-        onAfterEnter: this.afterEnter,
-      },
-      [this.$slots.default()],
-    );
-  },
+  emits: [
+    'before-enter',
+    'before-transition',
+    'after-enter',
+    'after-transition',
+  ],
   props: {
     name: String,
     appear: Boolean,
@@ -37,6 +41,6 @@ export default {
 };
 </script>
 
-<style lang="css" scoped>
+<style lang="css">
 @import './custom-transition.css';
 </style>

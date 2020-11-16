@@ -1,4 +1,5 @@
 <script>
+import { h } from 'vue';
 import addDays from 'date-fns/addDays';
 import addMonths from 'date-fns/addMonths';
 import addYears from 'date-fns/addYears';
@@ -9,7 +10,7 @@ import CalendarPane from '../CalendarPane/CalendarPane.vue';
 import CustomTransition from '../CustomTransition/CustomTransition.vue';
 import SvgIcon from '../SvgIcon/SvgIcon.vue';
 import AttributeStore from '../../utils/attributeStore';
-import { rootMixin, safeScopedSlotMixin } from '../../utils/mixins';
+import { rootMixin, slotMixin } from '../../utils/mixins';
 import { addHorizontalSwipeHandler } from '../../utils/touch';
 import {
   pageForDate,
@@ -36,36 +37,15 @@ import {
 
 export default {
   name: 'Calendar',
-  render(h) {
-    // Renderer for calendar panes
-    const panes = this.pages.map((page, i) =>
-      h(CalendarPane, {
-        ...this.$attrs,
-        attributes: this.store,
-        props: {
-          titlePosition: this.titlePosition_,
-          page,
-          minPage: this.minPage_,
-          maxPage: this.maxPage_,
-          canMove: this.canMove,
-        },
-        on: {
-          'update:page': e => this.refreshPages({ page: e, position: i + 1 }),
-          dayfocusin: e => {
-            this.lastFocusedDay = e;
-            this.$emit('dayfocusin', e);
-          },
-          dayfocusout: e => {
-            this.lastFocusedDay = null;
-            this.$emit('dayfocusout', e);
-          },
-        },
-        scopedSlots: this.$slots,
-        key: page.key,
-        ref: 'pages',
-        refInFor: true,
-      }),
-    );
+  emits: [
+    'dayfocusin',
+    'dayfocusout',
+    'transition-start',
+    'transition-end',
+    'update:from-page',
+    'update:to-page',
+  ],
+  render() {
     // Renderer for calendar arrows
     const getArrowButton = isPrev => {
       const click = () => this.move(isPrev ? -this.step_ : this.step_);
@@ -75,22 +55,16 @@ export default {
         'div',
         {
           class: ['vc-arrow', { 'is-disabled': isDisabled }],
-          attrs: {
-            role: 'button',
-          },
-          on: {
-            click,
-            keydown,
-          },
+          role: 'button',
+          onClick: click,
+          onKeydown: keydown,
         },
         [
           (isPrev
-            ? this.safeScopedSlot('header-left-button', { click })
-            : this.safeScopedSlot('header-right-button', { click })) ||
+            ? this.safeSlot('header-left-button', { click })
+            : this.safeSlot('header-right-button', { click })) ||
             h(SvgIcon, {
-              props: {
-                name: isPrev ? 'left-arrow' : 'right-arrow',
-              },
+              name: isPrev ? 'left-arrow' : 'right-arrow',
             }),
         ],
       );
@@ -98,11 +72,9 @@ export default {
     // Day popover
     const getDayPopover = () =>
       h(Popover, {
-        props: {
-          id: this.sharedState.dayPopoverId,
-          contentClass: 'vc-day-popover-container',
-        },
-        scopedSlots: {
+        id: this.sharedState.dayPopoverId,
+        contentClass: 'vc-day-popover-container',
+        slots: {
           default: ({ data: day, updateLayout, hide }) => {
             const attributes = Object.values(day.attributes).filter(
               a => a.popover,
@@ -110,8 +82,9 @@ export default {
             const masks = this.$locale.masks;
             const format = this.formatDate;
             const dayTitle = format(day.date, masks.dayPopover);
-            return (
-              this.safeScopedSlot('day-popover', {
+            return this.safeSlot(
+              'day-popover',
+              {
                 day,
                 attributes,
                 masks,
@@ -119,7 +92,7 @@ export default {
                 dayTitle,
                 updateLayout,
                 hide,
-              }) ||
+              },
               h('div', [
                 // Show popover header only if format is defined
                 masks.dayPopover &&
@@ -133,100 +106,110 @@ export default {
                 attributes.map(attribute =>
                   h(PopoverRow, {
                     key: attribute.key,
-                    props: {
-                      attribute,
-                    },
+                    attribute,
                   }),
                 ),
-              ])
+              ]),
             );
           },
         },
       });
 
-    // Renderer for calendar container
-    const getContainerGrid = () =>
-      h(
-        'div',
-        {
-          attrs: {
-            'data-helptext':
-              'Press the arrow keys to navigate by day, Home and End to navigate to week ends, PageUp and PageDown to navigate by month, Alt+PageUp and Alt+PageDown to navigate by year',
+    // Render calendar container
+    return h(
+      'div',
+      {
+        'data-helptext':
+          'Press the arrow keys to navigate by day, Home and End to navigate to week ends, PageUp and PageDown to navigate by month, Alt+PageUp and Alt+PageDown to navigate by year',
+        class: [
+          'vc-container',
+          `vc-${this.$theme.color}`,
+          {
+            'vc-is-expanded': this.isExpanded,
+            'vc-is-dark': this.$theme.isDark,
           },
-          class: [
-            'vc-container',
-            `vc-${this.$theme.color}`,
-            {
-              'vc-is-expanded': this.isExpanded,
-              'vc-is-dark': this.$theme.isDark,
-            },
-          ],
-          on: {
-            keydown: this.handleKeydown,
-            mouseup: e => e.preventDefault(),
-          },
-          ref: 'container',
-        },
-        [
-          h(
-            'div',
-            {
-              class: [
-                'vc-pane-container',
-                { 'in-transition': this.inTransition },
-              ],
-            },
-            [
-              h(
-                CustomTransition,
-                {
-                  props: {
-                    name: this.transitionName,
-                  },
-                  onBeforeEnter: () => {
-                    this.inTransition = true;
-                  },
-                  onAfterEnter: () => {
-                    this.inTransition = false;
-                  },
-                },
-                [
-                  h(
-                    Grid,
-                    {
-                      class: 'grid',
-                      props: {
-                        rows: this.rows,
-                        columns: this.columns,
-                        columnWidth: 'minmax(256px, 1fr)',
-                        disableFocus: true,
-                      },
-                      attrs: {
-                        ...this.$attrs,
-                      },
-                      key: arrayHasItems(this.pages) ? this.pages[0].key : '',
-                    },
-                    panes,
-                  ),
-                ],
-              ),
-              h(
-                'div',
-                {
-                  class: [`vc-arrows-container title-${this.titlePosition_}`],
-                },
-                [getArrowButton(true), getArrowButton(false)],
-              ),
-              this.$slots.footer && this.$slots.footer(),
-            ],
-          ),
-          getDayPopover(),
         ],
-      );
-
-    return getContainerGrid();
+        onKeydown: this.handleKeydown,
+        onMouseup: e => e.preventDefault(),
+        ref: 'container',
+      },
+      [
+        h(
+          'div',
+          {
+            class: [
+              'vc-pane-container',
+              { 'in-transition': this.inTransition },
+            ],
+          },
+          [
+            h(
+              CustomTransition,
+              {
+                name: this.transitionName,
+                onBeforeenter: () => {
+                  this.inTransition = true;
+                },
+                onAfterenter: () => {
+                  this.inTransition = false;
+                },
+              },
+              [
+                h(
+                  Grid,
+                  {
+                    ...this.$attrs,
+                    class: 'grid',
+                    items: this.pages,
+                    rows: this.rows,
+                    columns: this.columns,
+                    columnWidth: 'minmax(256px, 1fr)',
+                    disableFocus: true,
+                    key: arrayHasItems(this.pages) ? this.pages[0].key : '',
+                  },
+                  {
+                    cell: ({ item: page, position }) =>
+                      h(CalendarPane, {
+                        ...this.$attrs,
+                        key: page && page.key,
+                        attributes: this.store,
+                        titlePosition: this.titlePosition_,
+                        page,
+                        minPage: this.minPage_,
+                        maxPage: this.maxPage_,
+                        canMove: this.canMove,
+                        'onUpdate:page': e => {
+                          this.refreshPages({ page: e, position });
+                        },
+                        onDayfocusin: e => {
+                          this.lastFocusedDay = e;
+                          this.$emit('dayfocusin', e);
+                        },
+                        onDayfocusout: e => {
+                          this.lastFocusedDay = null;
+                          this.$emit('dayfocusout', e);
+                        },
+                        slots: this.$slots,
+                      }),
+                  },
+                ),
+              ],
+            ),
+            h(
+              'div',
+              {
+                class: [`vc-arrows-container title-${this.titlePosition_}`],
+              },
+              [getArrowButton(true), getArrowButton(false)],
+            ),
+            this.$slots.footer && this.$slots.footer(),
+          ],
+        ),
+        getDayPopover(),
+      ],
+    );
   },
-  mixins: [rootMixin, safeScopedSlotMixin],
+  mixins: [rootMixin, slotMixin],
   provide() {
     return {
       sharedState: this.sharedState,
@@ -685,7 +668,7 @@ export default {
       });
       // Refresh pages
       this.$nextTick(() => {
-        this.$refs.pages.forEach(p => p.refresh());
+        this.pages.forEach(p => p.days.forEach(d => d.refresh));
       });
     },
     handleKeydown(e) {

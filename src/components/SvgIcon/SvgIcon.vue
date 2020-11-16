@@ -54,6 +54,6 @@ export default {
 };
 </script>
 
-<style lang="css" scoped>
+<style lang="css">
 @import './svg-icon.css';
 </style>

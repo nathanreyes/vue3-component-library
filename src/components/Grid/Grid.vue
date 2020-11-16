@@ -1,4 +1,6 @@
 <script>
+import { h } from 'vue';
+
 const directions = {
   vLeading: 'vertical-leading',
   vTrailing: 'vertical-trailing',
@@ -7,37 +9,21 @@ const directions = {
 };
 export default {
   name: 'Grid',
-  render(h) {
-    // Grid cell renderer
-    const getCell = ({ nodes, position, row, column }) => {
-      // Get the default slot first
-      if (nodes.length >= position) {
-        return nodes[position - 1];
-      }
-      // Get the scoped slot second
-      if (this.$slots.default) {
-        return this.$slots.default({
-          position,
-          row,
-          column,
-        });
-      }
-      return null;
-    };
-
+  emits: ['rollover'],
+  render() {
+    const cell = this.$slots.cell;
     // Grid cells renderer
     const getCells = () => {
       const cells = [];
-      // Resolve default slot nodes (remove whitespaced)
-      const nodes =
-        (this.$slots.default &&
-          this.$slots.default().filter(n => n.tag !== undefined)) ||
-        [];
       // Build cells
       for (let r = 1, p = 1; r <= this.rows; r++) {
         for (let c = 1; c <= this.columns; c++) {
           const rFromEnd = r - this.rows - 1;
           const cFromEnd = c - this.columns - 1;
+          let item = null;
+          if (this.items && this.items[p - 1]) {
+            item = this.items[p - 1];
+          }
           // Add the cell for current row & column
           cells.push(
             h(
@@ -54,12 +40,10 @@ export default {
                   'grid-row': r,
                   'grid-column': c,
                 },
-                on: {
-                  keydown: e =>
-                    this.handleCellKeydown({ row: r, column: c, event: e }),
-                },
+                onKeydown: e =>
+                  this.handleCellKeydown({ row: r, column: c, event: e }),
               },
-              [getCell({ nodes, position: p++, row: r, column: c })],
+              [cell && cell({ item, position: p++, row: r, column: c })],
             ),
           );
         }
@@ -89,6 +73,10 @@ export default {
     gap: {
       type: String,
       default: '0px',
+    },
+    items: {
+      type: Array,
+      default: () => [],
     },
     autofit: Boolean,
     columnWidth: {
@@ -216,6 +204,6 @@ export default {
 };
 </script>
 
-<style scoped>
+<style lang="css">
 @import './grid.css';
 </style>

@@ -50,14 +50,14 @@ export function getPopoverTriggerEvents(opts) {
   let hovered = false;
   let focused = false;
   return {
-    click(e) {
+    onClick(e) {
       if (click) {
         opts.ref = e.target;
         togglePopover(opts);
         e.stopPropagation();
       }
     },
-    mousemove(e) {
+    onMousemove(e) {
       opts.ref = e.currentTarget;
       if (!hovered) {
         hovered = true;
@@ -66,7 +66,7 @@ export function getPopoverTriggerEvents(opts) {
         }
       }
     },
-    mouseleave(e) {
+    onMouseleave(e) {
       opts.ref = e.target;
       if (hovered) {
         hovered = false;
@@ -75,7 +75,7 @@ export function getPopoverTriggerEvents(opts) {
         }
       }
     },
-    focusin(e) {
+    onFocusin(e) {
       opts.ref = e.currentTarget;
       if (!focused) {
         focused = true;
@@ -84,7 +84,7 @@ export function getPopoverTriggerEvents(opts) {
         }
       }
     },
-    focusout(e) {
+    onFocusout(e) {
       opts.ref = e.currentTarget;
       if (focused && !elementContains(opts.ref, e.relatedTarget)) {
         focused = false;

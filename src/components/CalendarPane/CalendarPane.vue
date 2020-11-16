@@ -4,17 +4,19 @@ import Popover from '../Popover/Popover.vue';
 import CalendarNav from '../CalendarNav/CalendarNav.vue';
 import CalendarDay from '../CalendarDay/CalendarDay.vue';
 import Grid from '../Grid/Grid.vue';
-import { childMixin, safeScopedSlotMixin } from '../../utils/mixins';
+import { childMixin, slotMixin } from '../../utils/mixins';
 import { getPopoverTriggerEvents } from '../../utils/popovers';
 import { createGuid } from '../../utils/helpers';
 
 export default {
   name: 'CalendarPane',
-  mixins: [childMixin, safeScopedSlotMixin],
+  emits: ['update:page'],
+  mixins: [childMixin, slotMixin],
+  inheritAttrs: false,
   render() {
     // Header
     const header =
-      this.safeScopedSlot('header', this.page) ||
+      this.safeSlot('header', this.page) ||
       h('div', { class: 'vc-header' }, [
         // Header title
         h(
@@ -29,37 +31,25 @@ export default {
                 'div',
                 {
                   class: 'vc-title',
-                  on: this.navPopoverEvents,
+                  ...this.navPopoverEvents,
                 },
-                [
-                  this.safeScopedSlot(
-                    'header-title',
-                    this.page,
-                    this.page.title,
-                  ),
-                ],
+                [this.safeSlot('header-title', this.page, this.page.title)],
               ),
               // Navigation popover
               h(
                 Popover,
                 {
-                  props: {
-                    id: this.navPopoverId,
-                    contentClass: 'vc-nav-popover-container',
-                  },
+                  id: this.navPopoverId,
+                  contentClass: 'vc-nav-popover-container',
                 },
                 [
                   // Navigation pane
                   h(
                     CalendarNav,
                     {
-                      props: {
-                        value: this.page,
-                        validator: this.canMove,
-                      },
-                      on: {
-                        input: $event => this.move($event),
-                      },
+                      value: this.page,
+                      validator: this.canMove,
+                      onInput: $event => this.move($event),
                     },
                     {
                       ...this.$slots,
@@ -72,40 +62,49 @@ export default {
         ),
       ]);
 
+    // Weekdays
+    const weekdays = h(
+      Grid,
+      {
+        class: 'vc-weekdays',
+        items: this.weekdayLabels,
+        rows: 1,
+        columns: 7,
+        columnWidth: '1fr',
+        disableFocus: true,
+      },
+      {
+        cell: ({ item: wl }) =>
+          h(
+            'div',
+            {
+              key: wl,
+              class: 'vc-weekday',
+            },
+            [wl],
+          ),
+      },
+    );
+
     // Weeks
     const weeks = h(
       Grid,
       {
         class: 'vc-weeks',
-        props: {
-          rows: this.page.weeks + 1,
-          columns: 7,
-          columnWidth: '1fr',
-          disableFocus: true,
-        },
+        items: this.page.days,
+        rows: this.page.weeks,
+        columns: 7,
+        columnWidth: '1fr',
+        disableFocus: true,
       },
-      [
-        ...this.weekdayLabels.map((wl, i) =>
-          h(
-            'div',
-            {
-              key: i + 1,
-              class: 'vc-weekday',
-            },
-            [wl],
-          ),
-        ),
-        ...this.page.days.map(day =>
+      {
+        cell: ({ item: day }) =>
           h(CalendarDay, {
             ...this.$attrs,
             day,
-            scopedSlots: this.$slots,
-            key: day.id,
-            ref: 'days',
-            refInFor: true,
+            slots: this.$slots,
           }),
-        ),
-      ],
+      },
     );
 
     return h(
@@ -114,7 +113,7 @@ export default {
         class: 'vc-pane',
         ref: 'pane',
       },
-      [header, weeks],
+      [header, weekdays, weeks],
     );
   },
   props: {
@@ -166,13 +165,10 @@ export default {
     move(page) {
       this.$emit('update:page', page);
     },
-    refresh() {
-      this.$refs.days.forEach(d => d.refresh());
-    },
   },
 };
 </script>
 
-<style lang="css" scoped>
+<style lang="css">
 @import './calendar-pane.css';
 </style>

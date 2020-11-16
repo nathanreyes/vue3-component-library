@@ -1,13 +1,23 @@
 <script>
-import { childMixin, safeScopedSlotMixin } from '../../utils/mixins';
+import { h } from 'vue';
+import { childMixin, slotMixin } from '../../utils/mixins';
 import { arrayHasItems, mergeEvents } from '../../utils/helpers';
 import { getPopoverTriggerEvents, updatePopover } from '../../utils/popovers';
 import { last, get, defaults } from '../../utils/_';
 
 export default {
   name: 'CalendarDay',
-  mixins: [childMixin, safeScopedSlotMixin],
-  render(h) {
+  emits: [
+    'dayclick',
+    'daymouseenter',
+    'daymouseleave',
+    'dayfocusin',
+    'dayfocusout',
+    'daykeydown',
+  ],
+  mixins: [childMixin, slotMixin],
+  inheritAttrs: false,
+  render() {
     // Backgrounds layer
     const backgroundsLayer = () =>
       this.hasBackgrounds &&
@@ -35,7 +45,7 @@ export default {
 
     // Content layer
     const contentLayer = () =>
-      this.safeScopedSlot('day-content', {
+      this.safeSlot('day-content', {
         day: this.day,
         attributes: this.day.attributes,
         attributesMap: this.day.attributesMap,
@@ -45,10 +55,10 @@ export default {
       h(
         'span',
         {
+          ...this.dayContentProps,
           class: this.dayContentClass,
           style: this.dayContentStyle,
-          attrs: { ...this.dayContentProps },
-          on: this.dayContentEvents,
+          ...this.dayContentEvents,
           ref: 'content',
         },
         [this.day.label],
@@ -209,6 +219,12 @@ export default {
     },
     popovers() {
       this.refreshPopovers();
+    },
+    'day.refresh'(day) {
+      debugger;
+      if (day.refresh) {
+        this.refresh();
+      }
     },
   },
   mounted() {
@@ -415,12 +431,12 @@ export default {
       }
       this.dayContentEvents = mergeEvents(
         {
-          click: this.click,
-          mouseenter: this.mouseenter,
-          mouseleave: this.mouseleave,
-          focusin: this.focusin,
-          focusout: this.focusout,
-          keydown: this.keydown,
+          onClick: this.click,
+          onMouseenter: this.mouseenter,
+          onMouseleave: this.mouseleave,
+          onFocusin: this.focusin,
+          onFocusout: this.focusout,
+          onKeydown: this.keydown,
         },
         popoverEvents,
       );
@@ -433,6 +449,6 @@ export default {
 };
 </script>
 
-<style lang="css" scoped>
+<style lang="css">
 @import './calendar-day.css';
 </style>

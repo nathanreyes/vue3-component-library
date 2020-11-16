@@ -1,5 +1,5 @@
 <template>
-  <Calendar />
+  <Calendar :attributes="attributes" />
 </template>
 
 <script>
@@ -9,6 +9,11 @@ export default {
   name: 'App',
   components: {
     Calendar,
+  },
+  data() {
+    return {
+      attributes: [{ highlight: true, dates: new Date() }],
+    };
   },
 };
 </script>

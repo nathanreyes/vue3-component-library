@@ -1,4 +1,5 @@
 <script>
+import { h } from 'vue';
 import { createPopper } from '@popperjs/core';
 import { on, off, elementContains } from '../../utils/helpers';
 import { addTapOrClickHandler } from '../../utils/touch';
@@ -6,7 +7,8 @@ import { isFunction } from '../../utils/_';
 
 export default {
   name: 'Popover',
-  render(h) {
+  emits: ['before-show', 'after-show', 'before-hide', 'after-hide'],
+  render() {
     return h(
       'div',
       {
@@ -22,23 +24,19 @@ export default {
         h(
           'transition',
           {
-            props: {
-              name: this.transition,
-              appear: true,
-            },
-            onBeforeEnter: this.beforeEnter,
-            onAfterEnter: this.afterEnter,
-            onBeforeLeave: this.beforeLeave,
-            onAfterLeave: this.afterLeave,
+            name: this.transition,
+            appear: true,
+            onBeforeenter: this.beforeEnter,
+            onAfterenter: this.afterEnter,
+            onBeforeleave: this.beforeLeave,
+            onAfterleave: this.afterLeave,
           },
           [
             this.isVisible &&
               h(
                 'div',
                 {
-                  attrs: {
-                    tabindex: -1,
-                  },
+                  tabindex: -1,
                   class: [
                     'vc-popover-content',
                     `direction-${this.direction}`,
@@ -266,6 +264,7 @@ export default {
       clearTimeout(this.timeout);
       this.opts = opts;
       const fn = () => {
+        delete opts.id;
         Object.assign(this, opts);
         this.setupPopper();
         this.opts = null;
@@ -312,6 +311,7 @@ export default {
       }
     },
     update(opts = {}) {
+      delete opts.id;
       Object.assign(this, opts);
       this.setupPopper();
     },
@@ -340,6 +340,7 @@ export default {
       }
     },
     beforeEnter(e) {
+      console.log('before-show');
       this.$emit('before-show', e);
     },
     afterEnter(e) {
@@ -362,6 +363,6 @@ export default {
 };
 </script>
 
-<style lang="css" scoped>
+<style lang="css">
 @import './popover.css';
 </style>

@@ -1,13 +1,11 @@
-// Vue won't get included in bundle as it is externalized
-// https://cli.vuejs.org/guide/build-targets.html#library
-import Vue from 'vue';
-import { isObject, defaultsDeep, mapValues, get, has } from '../_';
+import { reactive, computed } from 'vue';
+import { isObject, defaultsDeep, mapValues, get, set, has } from '../_';
 import touch from './touch.json';
 import masks from './masks.json';
 import screens from './screens.json';
 import locales from './locales';
 
-const pluginDefaults = {
+let defaultConfig = {
   componentPrefix: 'v',
   navVisibility: 'click',
   titlePosition: 'center',
@@ -28,39 +26,34 @@ const pluginDefaults = {
   },
 };
 
-let defaults_ = null;
+if (window && window.__vcalendar__) {
+  defaultConfig = defaultsDeep(window.__vcalendar__, defaultConfig);
+}
 
-export const setupDefaults = opts => {
-  if (!defaults_) {
-    defaults_ = Vue.createApp({
-      data() {
-        return {
-          defaults: defaultsDeep(opts, pluginDefaults),
-        };
-      },
-      computed: {
-        locales() {
-          return mapValues(this.defaults.locales, v => {
-            v.masks = defaultsDeep(v.masks, this.defaults.masks);
-            return v;
-          });
-        },
-      },
-    });
-  }
-  return defaults_.defaults;
+const state = reactive({
+  defaults: defaultConfig,
+});
+
+const computedLocales = computed(() => {
+  return mapValues(state.defaults.locales, v => {
+    v.masks = defaultsDeep(v.masks, state.defaults.masks);
+    return v;
+  });
+});
+
+const install = (app, defaults) => {
+  state.defaults = defaultsDeep(defaults, state.defaults);
 };
 
+export default install;
+
 export const defaultsMixin = {
-  beforeCreate() {
-    setupDefaults();
-  },
   computed: {
     $defaults() {
-      return defaults_.defaults;
+      return state.defaults;
     },
     $locales() {
-      return defaults_.locales;
+      return computedLocales.value;
     },
   },
   methods: {

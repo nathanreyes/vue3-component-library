@@ -77,9 +77,9 @@ export const rootMixin = {
       );
     },
   },
-  created() {
-    setupScreens(this.$defaults.screens);
-  },
+  // created() {
+  //   setupScreens(this.$defaults.screens);
+  // },
   methods: {
     formatDate(date, mask) {
       return this.$locale ? this.$locale.format(date, mask) : '';

@@ -1,8 +1,12 @@
-import { Plugin } from 'vue';
+import { Plugin, DefineComponent } from 'vue';
 
-declare const vue3ComponentLibrary: Exclude<Plugin['install'], undefined>;
-export default vue3ComponentLibrary;
+declare const VCalendarLibrary: Exclude<Plugin['install'], undefined>;
+export default VCalendarLibrary;
 
-export const HelloWorld:
+export const Calendar: Exclude<Plugin['install'], undefined> | DefineComponent;
+
+export const Popover: Exclude<Plugin['install'], undefined> | DefineComponent;
+
+export const PopoverRow:
   | Exclude<Plugin['install'], undefined>
   | DefineComponent;

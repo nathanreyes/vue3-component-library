@@ -1,5 +1,5 @@
 import Calendar from './Calendar';
 import Popover from './Popover';
-import HelloWorld from './helloworld';
+import PopoverRow from './PopoverRow';
 
-export { Calendar, Popover, HelloWorld };
+export { Calendar, Popover, PopoverRow };

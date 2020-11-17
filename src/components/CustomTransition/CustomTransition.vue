@@ -9,8 +9,6 @@
   </transition>
 </template>
 <script>
-import { h } from 'vue';
-
 export default {
   name: 'CustomTransition',
   emits: [

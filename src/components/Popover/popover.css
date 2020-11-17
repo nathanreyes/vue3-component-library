@@ -120,12 +120,12 @@
   pointer-events: none;
 }
 
-.fade-enter,
+.fade-enter-from,
 .fade-leave-to {
   opacity: 0;
 }
 
-.slide-fade-enter,
+.slide-fade-enter-from,
 .slide-fade-leave-to {
   opacity: 0;
   &.direction-bottom {

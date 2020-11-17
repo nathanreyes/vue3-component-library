@@ -3,7 +3,8 @@ import { h } from 'vue';
 import { createPopper } from '@popperjs/core';
 import { on, off, elementContains } from '../../utils/helpers';
 import { addTapOrClickHandler } from '../../utils/touch';
-import { isFunction } from '../../utils/_';
+import { isFunction, omit } from '../../utils/_';
+import CustomTransition from '../CustomTransition/CustomTransition.vue';
 
 export default {
   name: 'Popover',
@@ -22,39 +23,41 @@ export default {
       },
       [
         h(
-          'transition',
+          CustomTransition,
           {
             name: this.transition,
             appear: true,
-            onBeforeenter: this.beforeEnter,
-            onAfterenter: this.afterEnter,
-            onBeforeleave: this.beforeLeave,
-            onAfterleave: this.afterLeave,
+            'on-before-enter': this.beforeEnter,
+            'on-after-enter': this.afterEnter,
+            'on-before-leave': this.beforeLeave,
+            'on-after-leave': this.afterLeave,
           },
-          [
-            this.isVisible &&
-              h(
-                'div',
-                {
-                  tabindex: -1,
-                  class: [
-                    'vc-popover-content',
-                    `direction-${this.direction}`,
-                    this.contentClass,
-                  ],
-                },
-                [
-                  this.content,
-                  h('span', {
-                    class: [
-                      'vc-popover-caret',
-                      `direction-${this.direction}`,
-                      `align-${this.alignment}`,
+          {
+            default: () =>
+              this.isVisible
+                ? h(
+                    'div',
+                    {
+                      tabindex: -1,
+                      class: [
+                        'vc-popover-content',
+                        `direction-${this.direction}`,
+                        this.contentClass,
+                      ],
+                    },
+                    [
+                      this.content,
+                      h('span', {
+                        class: [
+                          'vc-popover-caret',
+                          `direction-${this.direction}`,
+                          `align-${this.alignment}`,
+                        ],
+                      }),
                     ],
-                  }),
-                ],
-              ),
-          ],
+                  )
+                : null,
+          },
         ),
       ],
     );
@@ -264,8 +267,7 @@ export default {
       clearTimeout(this.timeout);
       this.opts = opts;
       const fn = () => {
-        delete opts.id;
-        Object.assign(this, opts);
+        Object.assign(this, omit(opts, ['id']));
         this.setupPopper();
         this.opts = null;
       };
@@ -311,8 +313,7 @@ export default {
       }
     },
     update(opts = {}) {
-      delete opts.id;
-      Object.assign(this, opts);
+      Object.assign(this, omit(opts, ['id']));
       this.setupPopper();
     },
     setupPopper() {
@@ -340,7 +341,6 @@ export default {
       }
     },
     beforeEnter(e) {
-      console.log('before-show');
       this.$emit('before-show', e);
     },
     afterEnter(e) {

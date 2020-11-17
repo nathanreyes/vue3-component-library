@@ -147,10 +147,10 @@ export default {
               CustomTransition,
               {
                 name: this.transitionName,
-                onBeforeenter: () => {
+                'on-before-enter': () => {
                   this.inTransition = true;
                 },
-                onAfterenter: () => {
+                'on-after-enter': () => {
                   this.inTransition = false;
                 },
               },

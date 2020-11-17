@@ -220,15 +220,13 @@ export default {
     popovers() {
       this.refreshPopovers();
     },
-    'day.refresh'(day) {
-      debugger;
-      if (day.refresh) {
-        this.refresh();
-      }
+    'day.shouldRefresh'(shouldRefresh) {
+      this.refresh();
     },
   },
   mounted() {
     this.refreshPopovers();
+    this.refresh();
   },
   methods: {
     getDayEvent(origEvent) {
@@ -256,9 +254,9 @@ export default {
       this.$emit('daykeydown', this.getDayEvent(e));
     },
     refresh() {
-      if (!this.day.refresh) return;
+      if (!this.day.shouldRefresh) return;
       /* eslint-disable vue/no-mutating-props */
-      this.day.refresh = false;
+      this.day.shouldRefresh = false;
       const glyphs = {
         backgrounds: [],
         dots: [],
@@ -266,13 +264,8 @@ export default {
         popovers: [],
         content: [],
       };
-      // Use $set to trigger reactivity in popovers, if needed
-      this.$set(
-        this.day,
-        'attributes',
-        Object.values(this.day.attributesMap || {}).sort(
-          (a, b) => a.order - b.order,
-        ),
+      this.day.attributes = Object.values(this.day.attributesMap || {}).sort(
+        (a, b) => a.order - b.order,
       );
       this.day.attributes.forEach(attr => {
         // Add glyphs for each attribute

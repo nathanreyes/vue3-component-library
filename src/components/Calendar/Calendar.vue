@@ -633,15 +633,16 @@ export default {
       pages.forEach(p => {
         // For each day...
         p.days.forEach(d => {
+          let shouldRefresh = false;
           let map = {};
           // If resetting...
           if (reset) {
-            d.refresh = true;
+            shouldRefresh = true;
           } else if (hasAny(d.attributesMap, deletes)) {
             // Delete attributes from the delete list
             map = omit(d.attributesMap, deletes);
             // Flag day for refresh
-            d.refresh = true;
+            shouldRefresh = true;
           } else {
             // Get the existing attributes
             map = d.attributesMap || {};
@@ -657,18 +658,15 @@ export default {
               };
               map[attr.key] = newAttr;
               // Flag day for refresh
-              d.refresh = true;
+              shouldRefresh = true;
             }
           });
           // Reassign day attributes
-          if (d.refresh) {
+          if (shouldRefresh) {
             d.attributesMap = map;
+            d.shouldRefresh = true;
           }
         });
-      });
-      // Refresh pages
-      this.$nextTick(() => {
-        this.pages.forEach(p => p.days.forEach(d => d.refresh));
       });
     },
     handleKeydown(e) {

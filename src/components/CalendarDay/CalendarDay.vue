@@ -220,7 +220,7 @@ export default {
     popovers() {
       this.refreshPopovers();
     },
-    'day.shouldRefresh'(shouldRefresh) {
+    'day.shouldRefresh'() {
       this.refresh();
     },
   },

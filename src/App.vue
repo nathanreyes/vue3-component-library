@@ -12,7 +12,9 @@ export default {
   },
   data() {
     return {
-      attributes: [{ highlight: true, dates: new Date() }],
+      attributes: [
+        { highlight: true, dates: [new Date(), new Date(2020, 10, 12)] },
+      ],
     };
   },
 };

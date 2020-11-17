@@ -24,7 +24,7 @@
 .slide-right-leave-active,
 .slide-up-leave-active,
 .slide-down-leave-active {
-  position: absolute;
+  position: absolute !important;
   width: 100%;
 }
 

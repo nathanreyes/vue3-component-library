@@ -91,7 +91,7 @@ export default {
     const weeks = h(
       Grid,
       {
-        class: 'vc-weeks',
+        class: 'vc-days',
         items: this.page.days,
         rows: this.page.weeks,
         columns: 7,
@@ -114,7 +114,7 @@ export default {
         class: 'vc-pane',
         ref: 'pane',
       },
-      [header, weekdays, weeks],
+      [header, h('div', { class: 'vc-weeks' }, [weekdays, weeks])],
     );
   },
   props: {

@@ -17,6 +17,7 @@
   pointer-events: auto;
   color: var(--gray-600);
   border-width: 2px;
+  border-style: solid;
   border-radius: var(--rounded);
   border-color: transparent;
   &:hover {

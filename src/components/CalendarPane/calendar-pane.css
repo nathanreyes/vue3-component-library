@@ -54,6 +54,7 @@
   user-select: none;
   white-space: nowrap;
   padding: 0 8px;
+  line-height: 27px;
   &:hover {
     opacity: 0.75;
   }
@@ -67,7 +68,7 @@
   color: var(--gray-500);
   font-size: var(--text-sm);
   font-weight: var(--font-bold);
-  padding: 5px 0;
+  margin: 8px 0;
   cursor: default;
   user-select: none;
 }

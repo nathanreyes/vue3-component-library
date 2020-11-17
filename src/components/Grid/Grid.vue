@@ -57,7 +57,7 @@ export default {
         class: 'vc-grid-container',
         style: this.containerStyle,
       },
-      [...getCells()],
+      getCells(),
     );
   },
   props: {
@@ -171,7 +171,7 @@ export default {
       if (state.direction) {
         this.$emit('rollover', state);
       }
-      // Focusd on cell for current state if event wasn't handled
+      // Focused on cell for current state if event wasn't handled
       if (!state.handled) {
         // Get grid cell element
         const cellSelector = `.vc-grid-cell-row-${state.row}.vc-grid-cell-col-${state.column}`;

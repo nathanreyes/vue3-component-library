@@ -42,20 +42,21 @@ export default {
                   id: this.navPopoverId,
                   contentClass: 'vc-nav-popover-container',
                 },
-                [
+                {
                   // Navigation pane
-                  h(
-                    CalendarNav,
-                    {
-                      value: this.page,
-                      validator: this.canMove,
-                      onInput: $event => this.move($event),
-                    },
-                    {
-                      ...this.$slots,
-                    },
-                  ),
-                ],
+                  default: () =>
+                    h(
+                      CalendarNav,
+                      {
+                        value: this.page,
+                        validator: this.canMove,
+                        onInput: $event => this.move($event),
+                      },
+                      {
+                        ...this.$slots,
+                      },
+                    ),
+                },
               ),
             ]),
           ],

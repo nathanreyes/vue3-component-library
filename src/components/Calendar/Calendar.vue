@@ -154,46 +154,47 @@ export default {
                   this.inTransition = false;
                 },
               },
-              [
-                h(
-                  Grid,
-                  {
-                    ...this.$attrs,
-                    class: 'grid',
-                    items: this.pages,
-                    rows: this.rows,
-                    columns: this.columns,
-                    columnWidth: 'minmax(256px, 1fr)',
-                    disableFocus: true,
-                    key: arrayHasItems(this.pages) ? this.pages[0].key : '',
-                  },
-                  {
-                    cell: ({ item: page, position }) =>
-                      h(CalendarPane, {
-                        ...this.$attrs,
-                        key: page && page.key,
-                        attributes: this.store,
-                        titlePosition: this.titlePosition_,
-                        page,
-                        minPage: this.minPage_,
-                        maxPage: this.maxPage_,
-                        canMove: this.canMove,
-                        'onUpdate:page': e => {
-                          this.refreshPages({ page: e, position });
-                        },
-                        onDayfocusin: e => {
-                          this.lastFocusedDay = e;
-                          this.$emit('dayfocusin', e);
-                        },
-                        onDayfocusout: e => {
-                          this.lastFocusedDay = null;
-                          this.$emit('dayfocusout', e);
-                        },
-                        slots: this.$slots,
-                      }),
-                  },
-                ),
-              ],
+              {
+                default: () =>
+                  h(
+                    Grid,
+                    {
+                      ...this.$attrs,
+                      class: 'grid',
+                      items: this.pages,
+                      rows: this.rows,
+                      columns: this.columns,
+                      columnWidth: 'minmax(256px, 1fr)',
+                      disableFocus: true,
+                      key: arrayHasItems(this.pages) ? this.pages[0].key : '',
+                    },
+                    {
+                      cell: ({ item: page, position }) =>
+                        h(CalendarPane, {
+                          ...this.$attrs,
+                          key: page && page.key,
+                          attributes: this.store,
+                          titlePosition: this.titlePosition_,
+                          page,
+                          minPage: this.minPage_,
+                          maxPage: this.maxPage_,
+                          canMove: this.canMove,
+                          'onUpdate:page': e => {
+                            this.refreshPages({ page: e, position });
+                          },
+                          onDayfocusin: e => {
+                            this.lastFocusedDay = e;
+                            this.$emit('dayfocusin', e);
+                          },
+                          onDayfocusout: e => {
+                            this.lastFocusedDay = null;
+                            this.$emit('dayfocusout', e);
+                          },
+                          slots: this.$slots,
+                        }),
+                    },
+                  ),
+              },
             ),
             h(
               'div',

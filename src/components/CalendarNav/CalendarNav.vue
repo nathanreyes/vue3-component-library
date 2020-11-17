@@ -2,45 +2,55 @@
   <!--Nav panel-->
   <div class="vc-nav-container">
     <!--Nav header-->
-    <grid :columns="3" ref="headerGrid" @rollover="onHeaderRollover">
-      <!--Move prev button-->
-      <span
-        role="button"
-        class="vc-nav-arrow is-left"
-        tabindex="-1"
-        @click="movePrev"
-        @keydown="e => onSpaceOrEnter(e, movePrev)"
-        ref="prevButton"
-      >
-        <slot name="nav-left-button">
-          <svg-icon name="left-arrow" width="20px" height="24px" />
-        </slot>
-      </span>
-      <!--Mode switch button-->
-      <span
-        role="button"
-        class="vc-nav-title vc-grid-focus"
-        :style="{ whiteSpace: 'nowrap' }"
-        tabindex="0"
-        @click="toggleMode"
-        @keydown="e => onSpaceOrEnter(e, toggleMode)"
-        ref="titleButton"
-      >
-        {{ title }}
-      </span>
-      <!--Move next button-->
-      <span
-        role="button"
-        class="vc-nav-arrow is-right"
-        tabindex="-1"
-        @click="moveNext"
-        @keydown="e => onSpaceOrEnter(e, moveNext)"
-        ref="nextButton"
-      >
-        <slot name="nav-right-button">
-          <svg-icon name="right-arrow" width="20px" height="24px" />
-        </slot>
-      </span>
+    <grid
+      :items="['prev', 'title', 'next']"
+      :columns="3"
+      ref="headerGrid"
+      @rollover="onHeaderRollover"
+    >
+      <template #cell="{ item }">
+        <!--Move prev button-->
+        <span
+          v-if="item === 'prev'"
+          role="button"
+          class="vc-nav-arrow is-left"
+          tabindex="-1"
+          @click="movePrev"
+          @keydown="e => onSpaceOrEnter(e, movePrev)"
+          ref="prevButton"
+        >
+          <slot name="nav-left-button">
+            <svg-icon name="left-arrow" width="20px" height="24px" />
+          </slot>
+        </span>
+        <!--Mode switch button-->
+        <span
+          v-else-if="item === 'title'"
+          role="button"
+          class="vc-nav-title vc-grid-focus"
+          :style="{ whiteSpace: 'nowrap' }"
+          tabindex="0"
+          @click="toggleMode"
+          @keydown="e => onSpaceOrEnter(e, toggleMode)"
+          ref="titleButton"
+        >
+          {{ title }}
+        </span>
+        <!--Move next button-->
+        <span
+          v-else
+          role="button"
+          class="vc-nav-arrow is-right"
+          tabindex="-1"
+          @click="moveNext"
+          @keydown="e => onSpaceOrEnter(e, moveNext)"
+          ref="nextButton"
+        >
+          <slot name="nav-right-button">
+            <svg-icon name="right-arrow" width="20px" height="24px" />
+          </slot>
+        </span>
+      </template>
     </grid>
     <!--Navigation items-->
     <grid

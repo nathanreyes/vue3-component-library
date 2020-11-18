@@ -1,17 +1,25 @@
 <template>
-  <Calendar :attributes="attributes" />
+  <div>
+    <Calendar :attributes="attributes" />
+  </div>
+  <div>
+    <DatePicker v-model="date" />
+  </div>
 </template>
 
 <script>
 import Calendar from './components/Calendar/Calendar.vue';
+import DatePicker from './components/DatePicker/DatePicker.vue';
 
 export default {
   name: 'App',
   components: {
     Calendar,
+    DatePicker,
   },
   data() {
     return {
+      date: new Date(),
       attributes: [
         { highlight: true, dates: [new Date(), new Date(2020, 10, 12)] },
       ],

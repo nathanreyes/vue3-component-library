@@ -49,15 +49,23 @@ export function getPopoverTriggerEvents(opts) {
   opts.autoHide = !click;
   let hovered = false;
   let focused = false;
+  const { isRenderFn } = opts;
+  const events = {
+    click: isRenderFn ? 'onClick' : 'click',
+    mousemove: isRenderFn ? 'onMousemove' : 'mousemove',
+    mouseleave: isRenderFn ? 'onMouseleave' : 'mouseleave',
+    focusin: isRenderFn ? 'onFocusin' : 'focusin',
+    focusout: isRenderFn ? 'onFocusout' : 'focusout',
+  };
   return {
-    onClick(e) {
+    [events.click](e) {
       if (click) {
         opts.ref = e.target;
         togglePopover(opts);
         e.stopPropagation();
       }
     },
-    onMousemove(e) {
+    [events.mousemove](e) {
       opts.ref = e.currentTarget;
       if (!hovered) {
         hovered = true;
@@ -66,7 +74,7 @@ export function getPopoverTriggerEvents(opts) {
         }
       }
     },
-    onMouseleave(e) {
+    [events.mouseleave](e) {
       opts.ref = e.target;
       if (hovered) {
         hovered = false;
@@ -75,7 +83,7 @@ export function getPopoverTriggerEvents(opts) {
         }
       }
     },
-    onFocusin(e) {
+    [events.focusin](e) {
       opts.ref = e.currentTarget;
       if (!focused) {
         focused = true;
@@ -84,7 +92,7 @@ export function getPopoverTriggerEvents(opts) {
         }
       }
     },
-    onFocusout(e) {
+    [events.focusout](e) {
       opts.ref = e.currentTarget;
       if (focused && !elementContains(opts.ref, e.relatedTarget)) {
         focused = false;

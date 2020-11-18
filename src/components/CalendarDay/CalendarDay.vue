@@ -419,7 +419,10 @@ export default {
       let popoverEvents = {};
       if (arrayHasItems(this.popovers)) {
         popoverEvents = getPopoverTriggerEvents(
-          defaults({ id: this.dayPopoverId, data: this.day }, ...this.popovers),
+          defaults(
+            { id: this.dayPopoverId, data: this.day, isRenderFn: true },
+            ...this.popovers,
+          ),
         );
       }
       this.dayContentEvents = mergeEvents(

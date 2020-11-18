@@ -154,6 +154,7 @@ export default {
           { name: 'flip', options: { fallbackPlacements: ['bottom'] } },
         ],
         isInteractive: true,
+        isRenderFn: true,
       });
     },
     weekdayLabels() {

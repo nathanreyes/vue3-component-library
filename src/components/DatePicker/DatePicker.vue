@@ -1,8 +1,8 @@
 <script>
 import { h } from 'vue';
-import Calendar from '../Calendar';
-import Popover from '../Popover';
-import TimePicker from '../TimePicker';
+import Calendar from '../Calendar/Calendar.vue';
+import Popover from '../Popover/Popover.vue';
+import TimePicker from '../TimePicker/TimePicker.vue';
 import { rootMixin } from '../../utils/mixins';
 import { addTapOrClickHandler } from '../../utils/touch';
 import {
@@ -55,47 +55,66 @@ const PATCH_TIME = 3;
 
 export default {
   name: 'DatePicker',
+  emits: [
+    'update:modelValue',
+    'dayclick',
+    'daykeydown',
+    'popover-will-show',
+    'popover-did-show',
+    'popover-will-hide',
+    'popover-did-hide',
+  ],
   render() {
     // Timepicker renderer
     const timePicker = () => {
       if (!this.dateParts) return null;
       const parts = this.isRange ? this.dateParts : [this.dateParts[0]];
-      return h('div', {}, [
-        ...parts.map((dp, idx) =>
-          h(TimePicker, {
-            modelValue: dp,
-            locale: this.$locale,
-            theme: this.$theme,
-            is24hr: this.is24hr,
-            minuteIncrement: this.minuteIncrement,
-            showBorder: !this.isTime,
-            'onUpdate:modelValue': p => this.onTimeInput(p, idx),
-          }),
-        ),
-        this.$slots.footer && this.$slots.footer(),
-      ]);
+      return h(
+        'div',
+        {},
+        {
+          ...this.$slots,
+          default: () =>
+            parts.map((dp, idx) =>
+              h(TimePicker, {
+                modelValue: dp,
+                locale: this.$locale,
+                theme: this.$theme,
+                is24hr: this.is24hr,
+                minuteIncrement: this.minuteIncrement,
+                showBorder: !this.isTime,
+                'onUpdate:modelValue': p => this.onTimeInput(p, idx),
+              }),
+            ),
+        },
+      );
     };
+
     // Calendar renderer
     const calendar = () =>
-      h(Calendar, {
-        ...this.$attrs,
-        attributes: this.attributes_,
-        theme: this.$theme,
-        locale: this.$locale,
-        timezone: this.timezone,
-        minDate: this.minDate,
-        maxDate: this.maxDate,
-        disabledDates: this.disabledDates,
-        availableDates: this.availableDates,
-        dayclick: this.onDayClick,
-        daykeydown: this.onDayKeydown,
-        daymouseenter: this.onDayMouseEnter,
-        slots: {
+      h(
+        Calendar,
+        {
+          ...this.$attrs,
+          attributes: this.attributes_,
+          theme: this.$theme,
+          locale: this.$locale,
+          timezone: this.timezone,
+          minDate: this.minDate,
+          maxDate: this.maxDate,
+          disabledDates: this.disabledDates,
+          availableDates: this.availableDates,
+          onDayclick: this.onDayClick,
+          onDaykeydown: this.onDayKeydown,
+          onDaymouseenter: this.onDayMouseEnter,
+          ref: 'calendar',
+        },
+        {
           ...this.$slots,
           footer: this.isDateTime ? timePicker : this.$slots.footer,
         },
-        ref: 'calendar',
-      });
+      );
+
     // Content renderer
     const content = () => {
       if (this.isTime) {
@@ -108,36 +127,33 @@ export default {
               { 'vc-is-dark': this.$theme.isDark },
             ],
           },
-          [timePicker()],
+          [timePicker],
         );
       }
       return calendar();
     };
-    return (
-      (this.$slots.default &&
-        // Convert this span to a fragment when supported in Vue
-        h('span', [
+
+    return this.$slots.default
+      ? h('span', [
           // Slot content
           this.$slots.default(this.slotArgs),
           // Popover content
-          h(Popover, {
-            id: this.datePickerPopoverId,
-            placement: 'bottom-start',
-            contentClass: `vc-container${this.isDark ? ' vc-is-dark' : ''}`,
-            'on-before-show': e => this.$emit('popover-will-show', e),
-            'on-after-show': e => this.$emit('popover-did-show', e),
-            'on-before-hide': e => this.$emit('popover-will-hide', e),
-            'on-after-hide': e => this.$emit('popover-did-hide', e),
-            slots: {
-              default() {
-                return content();
-              },
+          h(
+            Popover,
+            {
+              id: this.datePickerPopoverId,
+              placement: 'bottom-start',
+              contentClass: `vc-container${this.isDark ? ' vc-is-dark' : ''}`,
+              'on-before-show': e => this.$emit('popover-will-show', e),
+              'on-after-show': e => this.$emit('popover-did-show', e),
+              'on-before-hide': e => this.$emit('popover-will-hide', e),
+              'on-after-hide': e => this.$emit('popover-did-hide', e),
+              ref: 'popover',
             },
-            ref: 'popover',
-          }),
-        ])) ||
-      content()
-    );
+            [content()],
+          ),
+        ])
+      : content();
   },
   mixins: [rootMixin],
   props: {

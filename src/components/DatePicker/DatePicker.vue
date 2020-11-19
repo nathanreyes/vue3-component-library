@@ -57,6 +57,7 @@ export default {
   name: 'DatePicker',
   emits: [
     'update:modelValue',
+    'drag',
     'dayclick',
     'daykeydown',
     'popover-will-show',

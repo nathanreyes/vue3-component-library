@@ -111,7 +111,7 @@ export default {
         },
         {
           ...this.$slots,
-          footer: this.isDateTime ? timePicker : this.$slots.footer,
+          footer: () => (this.isDateTime ? timePicker() : this.$slots.footer),
         },
       );
 
@@ -127,14 +127,14 @@ export default {
               { 'vc-is-dark': this.$theme.isDark },
             ],
           },
-          [timePicker],
+          [timePicker()],
         );
       }
       return calendar();
     };
 
     return this.$slots.default
-      ? h('span', [
+      ? h('div', [
           // Slot content
           this.$slots.default(this.slotArgs),
           // Popover content
@@ -150,7 +150,9 @@ export default {
               'on-after-hide': e => this.$emit('popover-did-hide', e),
               ref: 'popover',
             },
-            [content()],
+            {
+              default: content,
+            },
           ),
         ])
       : content();

@@ -24,6 +24,7 @@
     "build:js_css": "rimraf dist && cross-env NODE_ENV=production SEP_CSS=true rollup --config rollup.config.js"
   },
   "dependencies": {
+    "@types/lodash": "^4.14.165",
     "core-js": "^3.7.0",
     "date-fns": "^2.16.1",
     "date-fns-tz": "^1.0.12",
@@ -42,7 +43,6 @@
     "@rollup/plugin-node-resolve": "^9.0.0",
     "@rollup/plugin-replace": "^2.3.3",
     "@rollup/plugin-url": "^5.0.1",
-    "@types/lodash": "^4.14.165",
     "@typescript-eslint/eslint-plugin": "2.33.0",
     "@typescript-eslint/parser": "2.33.0",
     "@vue/cli-plugin-babel": "4.5.0",

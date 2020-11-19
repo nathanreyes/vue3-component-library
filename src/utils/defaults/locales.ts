@@ -1,6 +1,6 @@
 import { toPairs } from '../_';
 
-const locales = {
+const locales: any = {
   // Arabic
   ar: { dow: 7, L: 'D/\u200FM/\u200FYYYY' },
   // Bulgarian
@@ -97,7 +97,7 @@ locales.no = locales.nb;
 locales.zh = locales['zh-CN'];
 
 // Remap from abbr. to intuitive property names
-toPairs(locales).forEach(([id, { dow, L }]) => {
+toPairs<any>(locales).forEach(([id, { dow, L }]) => {
   locales[id] = {
     id,
     firstDayOfWeek: dow,

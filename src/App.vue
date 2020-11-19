@@ -1,6 +1,9 @@
 <template>
   <div>
-    <Calendar :attributes="attributes">
+    <Calendar
+      :attributes="attributes"
+      :columns="$screens({ default: 1, md: 2 })"
+    >
       <template #day-popover="{}"> Helloooo </template>
     </Calendar>
   </div>
@@ -59,15 +62,8 @@
 </template>
 
 <script>
-import Calendar from './components/Calendar/Calendar.vue';
-import DatePicker from './components/DatePicker/DatePicker.vue';
-
 export default {
   name: 'App',
-  components: {
-    Calendar,
-    DatePicker,
-  },
   data() {
     return {
       date: new Date(),

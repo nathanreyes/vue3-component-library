@@ -3,8 +3,13 @@ import buildMediaQuery from './buildMediaQuery';
 import defaultScreens from './defaults/screens.json';
 import { isUndefined, mapValues, toPairs, has, get, set } from './_';
 
+interface ScreensState {
+  matches: Array<any>;
+  queries: object;
+}
+
 export default {
-  install: (app: App, screens: Screens | undefined) => {
+  install: (app: App, screens: object | undefined) => {
     if (!screens) {
       screens =
         get(app.config.globalProperties, '$vCalendar.config.screens') ||
@@ -14,20 +19,20 @@ export default {
 
     let shouldRefreshQueries = true;
 
-    const state = reactive({
+    const state = reactive<ScreensState>({
       matches: [],
       queries: [],
     });
 
     const refreshMatches = () => {
       state.matches = toPairs(state.queries)
-        .filter(p => p[1].matches)
-        .map(p => p[0]);
+        .filter((p: Array<any>) => p[1].matches)
+        .map((p: Array<any>) => p[0]);
     };
 
     const refreshQueries = () => {
       if (!shouldRefreshQueries || !window || !window.matchMedia) return;
-      state.queries = mapValues(screens, v => {
+      state.queries = mapValues(screens, (v: string) => {
         const query = window.matchMedia(buildMediaQuery(v));
         query.addEventListener('change', refreshMatches);
         return query;
@@ -44,8 +49,8 @@ export default {
         refreshQueries();
       },
       computed: {
-        $screens() {
-          return (config, def) =>
+        $screens(): Function {
+          return (config: any, def: any) =>
             state.matches.reduce(
               (prev, curr) => (has(config, curr) ? config[curr] : prev),
               isUndefined(def) ? config.default : def,

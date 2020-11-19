@@ -1,8 +1,10 @@
 import { App as Application, Plugin } from 'vue';
 import * as components from './components/index';
 import defaultsPlugin from './utils/defaults';
-import screensPlugin from './utils/screens';
+import _screensPlugin from './utils/screens';
 import { setVueInstance } from './utils/config/index';
+
+export const screensPlugin = _screensPlugin;
 
 const install: Exclude<Plugin['install'], undefined> = (
   instance: Application,

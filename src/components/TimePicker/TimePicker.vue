@@ -63,6 +63,7 @@ import { pad } from '../../utils/helpers';
 export default {
   name: 'TimePicker',
   components: { TimeSelect },
+  emits: ['update:modelValue'],
   props: {
     modelValue: { type: Object, required: true },
     locale: { type: Object, required: true },

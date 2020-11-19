@@ -61,7 +61,7 @@ export const defaultsMixin = {
       return this.passedProp(prop, get(this.$defaults, defaultPath), strategy);
     },
     passedProp(prop, fallback, strategy) {
-      if (has(this.$options.propsData, prop)) {
+      if (has(this.$props, prop)) {
         const propValue = this[prop];
         if (isObject(propValue) && strategy === 'merge') {
           return defaultsDeep(propValue, fallback);

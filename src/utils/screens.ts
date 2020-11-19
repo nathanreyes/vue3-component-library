@@ -1,10 +1,10 @@
-import { reactive } from 'vue';
+import { App, reactive } from 'vue';
 import buildMediaQuery from './buildMediaQuery';
 import defaultScreens from './defaults/screens.json';
 import { isUndefined, mapValues, toPairs, has, get, set } from './_';
 
 export default {
-  install: (app, screens) => {
+  install: (app: App, screens: Screens | undefined) => {
     if (!screens) {
       screens =
         get(app.config.globalProperties, '$vCalendar.config.screens') ||

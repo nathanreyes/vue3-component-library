@@ -1,11 +1,38 @@
-import { reactive, computed } from 'vue';
+import { reactive, computed, App, Component } from 'vue';
 import { isObject, defaultsDeep, mapValues, get, set, has } from '../_';
 import touch from './touch.json';
 import masks from './masks.json';
 import screens from './screens.json';
 import locales from './locales';
 
-let defaultConfig = {
+declare const window: any;
+
+interface DatePickerPopoverDefaults {
+  visibility: string;
+  placement: string;
+  keepVisibleOnInput: boolean;
+  isInteractive: boolean;
+}
+
+interface DatePickerDefaults {
+  updateOnInput: boolean;
+  inputDebounce: number;
+  popover: DatePickerPopoverDefaults;
+}
+
+interface Defaults {
+  componentPrefix: string;
+  navVisibility: string;
+  titlePosition: string;
+  transition: string;
+  touch: object;
+  masks: object;
+  screens: object;
+  locales: any;
+  datePicker: DatePickerDefaults;
+}
+
+let defaultConfig: Defaults = {
   componentPrefix: 'v',
   navVisibility: 'click',
   titlePosition: 'center',
@@ -35,21 +62,21 @@ const state = reactive({
 });
 
 const computedLocales = computed(() => {
-  return mapValues(state.defaults.locales, v => {
+  return mapValues(state.defaults.locales, (v: any) => {
     v.masks = defaultsDeep(v.masks, state.defaults.masks);
     return v;
   });
 });
 
-const install = (app, defaults) => {
+const install = (app: App, defaults: Defaults) => {
   state.defaults = defaultsDeep(defaults, state.defaults);
 };
 
 export default install;
 
-export const defaultsMixin = {
+export const defaultsMixin: Component = {
   computed: {
-    $defaults() {
+    $defaults(): Defaults {
       return state.defaults;
     },
     $locales() {
@@ -57,10 +84,10 @@ export const defaultsMixin = {
     },
   },
   methods: {
-    propOrDefault(prop, defaultPath, strategy) {
+    propOrDefault(prop: string, defaultPath: string, strategy: string): any {
       return this.passedProp(prop, get(this.$defaults, defaultPath), strategy);
     },
-    passedProp(prop, fallback, strategy) {
+    passedProp(prop: string, fallback: any, strategy: string): any {
       if (has(this.$props, prop)) {
         const propValue = this[prop];
         if (isObject(propValue) && strategy === 'merge') {

@@ -2,7 +2,7 @@ import { isString, isArray, map, has, get } from './_';
 
 // This function gratuitously borrowed from TailwindCSS
 // https://github.com/tailwindcss/tailwindcss/blob/master/src/util/buildMediaQuery.js
-export default function buildMediaQuery(screens) {
+export default function buildMediaQuery(screens: Screens) {
   // Default min width
   if (isString(screens)) {
     screens = { min: screens };
@@ -11,8 +11,8 @@ export default function buildMediaQuery(screens) {
   if (!isArray(screens)) {
     screens = [screens];
   }
-  return screens
-    .map(screen => {
+  return (screens as Array<Screen>)
+    .map((screen: Screen) => {
       if (has(screen, 'raw')) {
         return screen.raw;
       }

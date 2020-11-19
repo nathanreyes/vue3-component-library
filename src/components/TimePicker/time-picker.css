@@ -11,17 +11,17 @@
   }
 }
 
-.vc-date-time {
-  margin-left: 8px;
-}
-
 .vc-time-icon {
   width: 16px;
   height: 16px;
   color: var(--gray-600);
 }
 
-.vc-date {
+.vc-time-content {
+  margin-left: 8px;
+}
+
+.vc-time-date {
   display: flex;
   align-items: center;
   font-size: var(--text-sm);
@@ -29,25 +29,30 @@
   text-transform: uppercase;
   padding: 0 0 4px 4px;
   margin-top: -4px;
-  & .vc-weekday {
-    color: var(--gray-700);
-    letter-spacing: var(--tracking-wide);
-  }
-  & .vc-month {
-    color: var(--accent-600);
-    margin-left: 8px;
-  }
-  & .vc-day {
-    color: var(--accent-600);
-    margin-left: 4px;
-  }
-  & .vc-year {
-    color: var(--gray-500);
-    margin-left: 8px;
-  }
+  line-height: 21px;
 }
 
-.vc-time {
+.vc-time-weekday {
+  color: var(--gray-700);
+  letter-spacing: var(--tracking-wide);
+}
+
+.vc-time-month {
+  color: var(--accent-600);
+  margin-left: 8px;
+}
+
+.vc-time-day {
+  color: var(--accent-600);
+  margin-left: 4px;
+}
+
+.vc-time-year {
+  color: var(--gray-500);
+  margin-left: 8px;
+}
+
+.vc-time-select {
   display: flex;
   align-items: center;
 }
@@ -95,25 +100,25 @@
   & .vc-time-icon {
     color: var(--gray-400);
   }
-  & .vc-weekday {
+  & .vc-time-weekday {
     color: var(--gray-400);
   }
-  & .vc-month {
+  & .vc-time-month {
     color: var(--accent-400);
   }
-  & .vc-day {
+  & .vc-time-day {
     color: var(--accent-400);
   }
-  & .vc-year {
+  & .vc-time-year {
     color: var(--gray-500);
   }
   & .vc-am-pm {
     background: var(--gray-700);
-    color: var(--gray-100);
     &:focus {
       border-color: var(--accent-500);
     }
     & button {
+      color: var(--gray-100);
       &:hover {
         color: var(--gray-400);
       }

@@ -16,22 +16,22 @@
         <path d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
       </svg>
     </div>
-    <div class="vc-date-time">
-      <div v-if="date" class="vc-date">
-        <span class="vc-weekday">
+    <div class="vc-time-content">
+      <div v-if="date" class="vc-time-date">
+        <span class="vc-time-weekday">
           {{ locale.format(date, 'WWW') }}
         </span>
-        <span class="vc-month">
+        <span class="vc-time-month">
           {{ locale.format(date, 'MMM') }}
         </span>
-        <span class="vc-day">
+        <span class="vc-time-day">
           {{ locale.format(date, 'D') }}
         </span>
-        <span class="vc-year">
+        <span class="vc-time-year">
           {{ locale.format(date, 'YYYY') }}
         </span>
       </div>
-      <div class="vc-time">
+      <div class="vc-time-select">
         <time-select v-model.number="hours" :options="hourOptions" />
         <span style="margin: 0 4px">:</span>
         <time-select v-model.number="minutes" :options="minuteOptions" />

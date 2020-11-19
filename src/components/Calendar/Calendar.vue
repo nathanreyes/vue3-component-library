@@ -71,10 +71,13 @@ export default {
     };
     // Day popover
     const getDayPopover = () =>
-      h(Popover, {
-        id: this.sharedState.dayPopoverId,
-        contentClass: 'vc-day-popover-container',
-        slots: {
+      h(
+        Popover,
+        {
+          id: this.sharedState.dayPopoverId,
+          contentClass: 'vc-day-popover-container',
+        },
+        {
           default: ({ data: day, updateLayout, hide }) => {
             const attributes = Object.values(day.attributes).filter(
               a => a.popover,
@@ -113,7 +116,7 @@ export default {
             );
           },
         },
-      });
+      );
 
     // Render calendar container
     return h(

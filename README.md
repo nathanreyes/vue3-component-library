@@ -1,4 +1,4 @@
-# vue 3 Component Library BoilerPlate
+# VCalendar Plugin for Vue 3
 
 **Technology Used:**\
 [Vuejs 3.0](https://github.com/vuejs/vue-next)\
@@ -12,13 +12,39 @@ Please follow below mentioned step to run this project:
 - Clone the repo
 
 ```shell
-https://github.com/shubhadip/vue3-component-library
+https://github.com/nathanreyes/vue3-component-library
 ```
 
-### Run
+### Install Plugin
 
 ```
-yarn install
+yarn add v-calendar@next
+```
+
+### Use Plugin
+
+```
+import { createApp } from 'vue';
+import VCalendar from 'v-calendar';
+
+const app = createApp();
+app.use(VCalendar)
+```
+
+### Use Components
+
+```html
+<Calendar />
+```
+
+```js
+import { Calendar } from 'v-calendar';
+
+export default {
+  components: {
+    Calendar,
+  },
+};
 ```
 
 ### Compiles and hot-reloads for development

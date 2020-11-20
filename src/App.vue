@@ -78,6 +78,10 @@ export default {
           },
           dates: [new Date(), new Date(2020, 10, 12)],
         },
+        {
+          dot: true,
+          dates: new Date(2020, 10, 5),
+        },
       ],
     };
   },

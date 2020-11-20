@@ -1,23 +1,21 @@
 import { createApp } from 'vue';
 import App from './App.vue';
 
+const defaults = {
+  titlePosition: 'left',
+};
+
 declare const window: any;
+window.__vcalendar__ = defaults;
 
 const app = createApp(App);
 
-const defaults = {
-  titlePosition: 'right',
-};
+import VCalendar from './index';
+app.use(VCalendar, defaults)
 
-// import VCalendar from './index';
-// app.use(VCalendar, defaults);
-
-window.__vcalendar__ = defaults;
-
-import { screensPlugin, Calendar, DatePicker } from './index';
-console.log(screensPlugin);
-app.use(screensPlugin);
-app.use(Calendar);
-app.use(DatePicker);
+// import { setupCalendar, Calendar, DatePicker } from './index';
+// setupCalendar(app, defaults);
+// app.use(Calendar);
+// app.use(DatePicker);
 
 app.mount('#app');

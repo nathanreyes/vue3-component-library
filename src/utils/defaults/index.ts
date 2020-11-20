@@ -20,7 +20,7 @@ interface DatePickerDefaults {
   popover: DatePickerPopoverDefaults;
 }
 
-interface Defaults {
+export interface Defaults {
   componentPrefix: string;
   navVisibility: string;
   titlePosition: string;
@@ -32,7 +32,7 @@ interface Defaults {
   datePicker: DatePickerDefaults;
 }
 
-let defaultConfig: Defaults = {
+const defaultConfig: Defaults = {
   componentPrefix: 'v',
   navVisibility: 'click',
   titlePosition: 'center',
@@ -53,11 +53,8 @@ let defaultConfig: Defaults = {
   },
 };
 
-if (window && window.__vcalendar__) {
-  defaultConfig = defaultsDeep(window.__vcalendar__, defaultConfig);
-}
-
 const state = reactive({
+  didSetup: false,
   defaults: defaultConfig,
 });
 
@@ -68,11 +65,13 @@ const computedLocales = computed(() => {
   });
 });
 
-const install = (app: App, defaults: Defaults) => {
+const setup = (defaults: Defaults) => {
   state.defaults = defaultsDeep(defaults, state.defaults);
+  state.didSetup = true;
+  return state.defaults;
 };
 
-export default install;
+export default setup;
 
 export const defaultsMixin: Component = {
   computed: {
@@ -97,5 +96,11 @@ export const defaultsMixin: Component = {
       }
       return fallback;
     },
+  },
+  mounted() {
+    if (!state.didSetup && window && window.__vcalendar__) {
+      state.defaults = defaultsDeep(window.__vcalendar__, defaultConfig);
+      state.didSetup = true;
+    }
   },
 };

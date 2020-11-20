@@ -1,6 +1,8 @@
 import { createApp } from 'vue';
 import App from './App.vue';
 
+declare const window: any;
+
 const app = createApp(App);
 
 const defaults = {

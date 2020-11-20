@@ -1,23 +1,22 @@
 import { App as Application, Plugin } from 'vue';
 import * as components from './components/index';
-import defaultsPlugin from './utils/defaults';
-import _screensPlugin from './utils/screens';
+import setup from './utils/setup';
 import { setVueInstance } from './utils/config/index';
+import { Defaults } from './utils/defaults';
 
-export const screensPlugin = _screensPlugin;
+export { setup as setupCalendar };
+export { default as screensPlugin } from './utils/screens';
 
 const install: Exclude<Plugin['install'], undefined> = (
   instance: Application,
-  defaults: Record<string, any>,
+  defaults: Defaults,
 ) => {
   setVueInstance(instance);
-  instance.use(defaultsPlugin, defaults);
-  instance.use(screensPlugin);
+  setup(instance, defaults);
   for (const componentKey in components) {
     instance.use((components as any)[componentKey]);
   }
 };
 
 export default install;
-
 export * from './components';

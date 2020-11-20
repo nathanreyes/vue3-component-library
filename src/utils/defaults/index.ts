@@ -8,28 +8,28 @@ import locales from './locales';
 declare const window: any;
 
 interface DatePickerPopoverDefaults {
-  visibility: string;
-  placement: string;
-  keepVisibleOnInput: boolean;
-  isInteractive: boolean;
+  visibility?: string;
+  placement?: string;
+  keepVisibleOnInput?: boolean;
+  isInteractive?: boolean;
 }
 
 interface DatePickerDefaults {
-  updateOnInput: boolean;
-  inputDebounce: number;
-  popover: DatePickerPopoverDefaults;
+  updateOnInput?: boolean;
+  inputDebounce?: number;
+  popover?: DatePickerPopoverDefaults;
 }
 
 export interface Defaults {
-  componentPrefix: string;
-  navVisibility: string;
-  titlePosition: string;
-  transition: string;
-  touch: object;
-  masks: object;
-  screens: object;
-  locales: any;
-  datePicker: DatePickerDefaults;
+  componentPrefix?: string;
+  navVisibility?: string;
+  titlePosition?: string;
+  transition?: string;
+  touch?: object;
+  masks?: object;
+  screens?: object;
+  locales?: any;
+  datePicker?: DatePickerDefaults;
 }
 
 const defaultConfig: Defaults = {

@@ -1,7 +1,9 @@
 import { App, reactive } from 'vue';
 import buildMediaQuery from './buildMediaQuery';
 import defaultScreens from './defaults/screens.json';
-import { isUndefined, mapValues, toPairs, has, get, set } from './_';
+import { defaultsDeep, isUndefined, mapValues, toPairs, has } from './_';
+
+declare const window: any;
 
 interface ScreensState {
   matches: Array<any>;
@@ -10,15 +12,13 @@ interface ScreensState {
 
 export default {
   install: (app: App, screens: object | undefined) => {
-    if (!screens) {
-      screens =
-        get(app.config.globalProperties, '$vCalendar.config.screens') ||
-        defaultScreens;
-    }
-    set(app.config.globalProperties, '$vCalendar.config.screens', screens);
+    screens = defaultsDeep(
+      screens,
+      window && window.__screens__,
+      defaultScreens,
+    );
 
     let shouldRefreshQueries = true;
-
     const state = reactive<ScreensState>({
       matches: [],
       queries: [],

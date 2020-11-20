@@ -1,5 +1,5 @@
 import { reactive, computed, App, Component } from 'vue';
-import { isObject, defaultsDeep, mapValues, get, set, has } from '../_';
+import { isObject, defaultsDeep, mapValues, get, has } from '../_';
 import touch from './touch.json';
 import masks from './masks.json';
 import screens from './screens.json';

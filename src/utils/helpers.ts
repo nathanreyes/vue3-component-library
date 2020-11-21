@@ -1,6 +1,11 @@
 import { isArray, isObject, isFunction, isDate } from './_';
 
-export const pad = (val, len, char = '0') => {
+export interface Page {
+  month: number;
+  year: number;
+}
+
+export const pad = (val: string, len: number, char = '0') => {
   val = val !== null && val !== undefined ? String(val) : '';
   len = len || 2;
   while (val.length < len) {
@@ -9,12 +14,14 @@ export const pad = (val, len, char = '0') => {
   return val;
 };
 
-export const evalFn = (fn, args) => (isFunction(fn) ? fn(args) : fn);
+export const evalFn = (fn: Function, args: any) =>
+  isFunction(fn) ? fn(args) : fn;
 
-export const pageIsValid = page => !!(page && page.month && page.year);
+export const pageIsValid = (page: Page | null): boolean =>
+  !!(page && page.month && page.year);
 
-export const mergeEvents = (...args) => {
-  const result = {};
+export const mergeEvents = (...args: Array<any>) => {
+  const result: any = {};
   args.forEach(e =>
     Object.entries(e).forEach(([key, value]) => {
       if (!result[key]) {
@@ -29,31 +36,35 @@ export const mergeEvents = (...args) => {
   return result;
 };
 
-export const pageIsBeforePage = (page, comparePage) => {
+export const pageIsBeforePage = (page: Page, comparePage: Page): boolean => {
   if (!pageIsValid(page) || !pageIsValid(comparePage)) return false;
   if (page.year === comparePage.year) return page.month < comparePage.month;
   return page.year < comparePage.year;
 };
 
-export const pageIsAfterPage = (page, comparePage) => {
+export const pageIsAfterPage = (page: Page, comparePage: Page): boolean => {
   if (!pageIsValid(page) || !pageIsValid(comparePage)) return false;
   if (page.year === comparePage.year) return page.month > comparePage.month;
   return page.year > comparePage.year;
 };
 
-export const pageIsBetweenPages = (page, fromPage, toPage) =>
+export const pageIsBetweenPages = (
+  page: Page,
+  fromPage: Page,
+  toPage: Page,
+): boolean =>
   (page || false) &&
   !pageIsBeforePage(page, fromPage) &&
   !pageIsAfterPage(page, toPage);
 
-export const pageIsEqualToPage = (aPage, bPage) => {
+export const pageIsEqualToPage = (aPage: Page, bPage: Page): boolean => {
   if (!aPage && bPage) return false;
   if (aPage && !bPage) return false;
   if (!aPage && !bPage) return true;
   return aPage.month === bPage.month && aPage.year === bPage.year;
 };
 
-export const pageForDate = date => {
+export const pageForDate = (date: Date): Page | null => {
   if (!date) return null;
   return {
     month: date.getMonth() + 1,
@@ -61,7 +72,7 @@ export const pageForDate = date => {
   };
 };
 
-export const addPages = ({ month, year }, count) => {
+export const addPages = ({ month, year }: Page, count: number): Page => {
   const incr = count > 0 ? 1 : -1;
   for (let i = 0; i < Math.abs(count); i++) {
     month += incr;
@@ -79,20 +90,20 @@ export const addPages = ({ month, year }, count) => {
   };
 };
 
-export const pageForThisMonth = () => pageForDate(new Date());
+export const pageForThisMonth = (): Page => pageForDate(new Date()) as Page;
 
 export const pageForNextMonth = () => addPages(pageForThisMonth(), 1);
 
 export const pageForPrevMonth = () => addPages(pageForThisMonth(), -1);
 
-export const getMaxPage = (...args) =>
+export const getMaxPage = (...args: Array<Page>) =>
   args.reduce((prev, curr) => {
     if (!prev) return curr;
     if (!curr) return prev;
     return pageIsAfterPage(curr, prev) ? curr : prev;
   });
 
-export function datesAreEqual(a, b) {
+export function datesAreEqual(a: any, b: any): boolean {
   const aIsDate = isDate(a);
   const bIsDate = isDate(b);
   if (!aIsDate && !bIsDate) return true;
@@ -100,24 +111,35 @@ export function datesAreEqual(a, b) {
   return a.getTime() === b.getTime();
 }
 
-export const arrayHasItems = array => isArray(array) && array.length;
+export const arrayHasItems = (array: Array<any>): boolean =>
+  isArray(array) && array.length > 0;
 
-export const findAncestor = (el, fn) => {
+export const findAncestor = (
+  el: Element | null,
+  fn: Function,
+): Element | null => {
   if (!el) return null;
   if (fn && fn(el)) return el;
   return findAncestor(el.parentElement, fn);
 };
 
-export const elementHasAncestor = (el, ancestor) =>
-  !!findAncestor(el, e => e === ancestor);
+export const elementHasAncestor = (el: Element, ancestor: Element) =>
+  !!findAncestor(el, (e: Element) => e === ancestor);
 
-export const elementPositionInAncestor = (el, ancestor) => {
+export interface ElementPosition {
+  top: number;
+  left: number;
+}
+export const elementPositionInAncestor = (
+  el: HTMLElement,
+  ancestor: HTMLElement,
+): ElementPosition => {
   let top = 0;
   let left = 0;
   do {
     top += el.offsetTop || 0;
     left += el.offsetLeft || 0;
-    el = el.offsetParent;
+    el = el.offsetParent as any;
   } while (el && el !== ancestor);
   return {
     top,
@@ -125,8 +147,8 @@ export const elementPositionInAncestor = (el, ancestor) => {
   };
 };
 
-export const mixinOptionalProps = (source, target, props) => {
-  const assigned = [];
+export const mixinOptionalProps = (source: any, target: any, props: [any]) => {
+  const assigned: Array<string> = [];
   props.forEach(p => {
     const name = p.name || p.toString();
     const mixin = p.mixin;
@@ -143,22 +165,35 @@ export const mixinOptionalProps = (source, target, props) => {
   };
 };
 
-export const on = (element, event, handler, opts) => {
+export const on = (
+  element: Element,
+  event: string,
+  handler: EventListenerOrEventListenerObject,
+  opts: boolean | AddEventListenerOptions | undefined,
+) => {
   if (element && event && handler) {
     element.addEventListener(event, handler, opts);
   }
 };
 
-export const off = (element, event, handler, opts) => {
+export const off = (
+  element: Element,
+  event: string,
+  handler: EventListenerOrEventListenerObject,
+  opts: boolean | EventListenerOptions | undefined,
+) => {
   if (element && event) {
     element.removeEventListener(event, handler, opts);
   }
 };
 
-export const elementContains = (element, child) =>
+export const elementContains = (element: Element, child: Element) =>
   !!element && !!child && (element === child || element.contains(child));
 
-export const onSpaceOrEnter = (event, handler) => {
+export const onSpaceOrEnter = (
+  event: KeyboardEvent,
+  handler: EventHandlerNonNull,
+) => {
   if (event.key === ' ' || event.key === 'Enter') {
     handler(event);
     event.preventDefault();
@@ -174,7 +209,7 @@ export const createGuid = () => {
   return `${S4() + S4()}-${S4()}-${S4()}-${S4()}-${S4()}${S4()}${S4()}`;
 };
 
-export function hash(str) {
+export function hash(str: string): number {
   let hashcode = 0;
   let i = 0;
   let chr;

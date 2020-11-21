@@ -160,6 +160,9 @@ const mapComponent = name => {
         globals,
       },
       plugins: [
+        resolve({
+          extensions: ['.ts', '.js', '.json'],
+        }),
         typescript(),
         json(),
         ...baseConfig.plugins.preVue,
@@ -184,6 +187,9 @@ if (!argv.format || argv.format === 'es') {
       dir: 'dist/esm',
     },
     plugins: [
+      resolve({
+        extensions: ['.ts', '.js', '.json'],
+      }),
       typescript(),
       commonjs(),
       json(),
@@ -206,6 +212,9 @@ if (!argv.format || argv.format === 'es') {
       file: 'dist/vuelib.esm.js',
     },
     plugins: [
+      resolve({
+        extensions: ['.ts', '.js', '.json'],
+      }),
       typescript(),
       commonjs(),
       replace(baseConfig.plugins.replace),

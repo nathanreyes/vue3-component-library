@@ -1,4 +1,4 @@
-import { reactive, computed, App, Component } from 'vue';
+import { reactive, computed, Component } from 'vue';
 import { isObject, defaultsDeep, mapValues, get, has } from '../_';
 import touch from './touch.json';
 import masks from './masks.json';

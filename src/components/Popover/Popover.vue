@@ -44,6 +44,7 @@ export default {
                         `direction-${this.direction}`,
                         this.contentClass,
                       ],
+                      style: this.contentStyle,
                     },
                     [
                       this.content,
@@ -72,6 +73,8 @@ export default {
       opts: null,
       data: null,
       transition: 'slide-fade',
+      transitionTranslate: '15px',
+      transitionDuration: '0.15s',
       placement: 'bottom',
       positionFixed: false,
       modifiers: [],
@@ -97,6 +100,12 @@ export default {
           })) ||
         this.$slots.default
       );
+    },
+    contentStyle() {
+      return {
+        '--slide-translate': this.transitionTranslate,
+        '--slide-duration': this.transitionDuration,
+      };
     },
     popperOptions() {
       return {

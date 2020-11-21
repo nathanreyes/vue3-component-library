@@ -3,7 +3,6 @@ import Theme from '../theme';
 import Locale from '../locale';
 import { isObject, isArray, isDate } from '../_';
 import { defaultsMixin } from '../defaults';
-import { setupScreens } from '../screens';
 import Attribute from '../attribute';
 
 export const rootMixin = {
